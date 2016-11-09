@@ -11,7 +11,8 @@ app.use(bodyParser.urlencoded({extended : true}));
 mongoose.connect('mongodb://localhost/url-shortener');
 
 var linkSchema = new mongoose.Schema({
-  url : String
+  url : String,
+  shortCode : String
 });
 
 //make a collection called links in our url-shortener DB
@@ -22,9 +23,11 @@ var Links = mongoose.model('links', linkSchema);
 //get route with link parameter
 app.get('/new/:url(*)', function(req, res ,next){
   var url = req.params.url;
+  var id = '';
   if(validUrl.isHttpUri(url) || validUrl.isHttpsUri(url)){
     Links.create({
-      url : url
+      url : url,
+      shortCode : shortId.generate()
     }, function(err, result){
       if(err){
         console.log(err);
@@ -33,10 +36,19 @@ app.get('/new/:url(*)', function(req, res ,next){
         console.log(result);
       }
     });
+
+    // Links.findById(id, function(err, data){
+    //   if(err){
+    //     console.log(err);
+    //   } else {
+    //     console.log(data);
+    //   }
+    // });
+
+    res.send(url);
   } else {
     res.send('Please Enter A Valid Url');
   }
-  res.send(url);
 });
 
 
