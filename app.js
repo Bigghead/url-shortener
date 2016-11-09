@@ -23,7 +23,6 @@ var Links = mongoose.model('links', linkSchema);
 //get route with link parameter
 app.get('/new/:url(*)', function(req, res ,next){
   var url = req.params.url;
-  var id = '';
   if(validUrl.isHttpUri(url) || validUrl.isHttpsUri(url)){
     Links.create({
       url : url,
@@ -35,21 +34,29 @@ app.get('/new/:url(*)', function(req, res ,next){
         console.log('Successful Add');
         console.log(result);
       }
+        res.json(result);
     });
-
-    // Links.findById(id, function(err, data){
-    //   if(err){
-    //     console.log(err);
-    //   } else {
-    //     console.log(data);
-    //   }
-    // });
-
-    res.send(url);
   } else {
-    res.send('Please Enter A Valid Url');
+    res.json({error: 'Please Enter A Valid URL'});
   }
+
 });
+
+
+//new route
+app.get('/:short', function(req, res, next){
+  var shortLink = req.params.short;
+
+  Links.findOne({
+    'shortCode' : shortLink
+  }, function(err, doc){
+    if(err){
+      console.log(err);
+    } else {
+      res.redirect(doc.url);
+    }
+  });
+})
 
 
 app.listen(3000, function(){
