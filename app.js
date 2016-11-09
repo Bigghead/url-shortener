@@ -18,18 +18,24 @@ var linkSchema = new mongoose.Schema({
 var Links = mongoose.model('links', linkSchema);
 
 
+
 //get route with link parameter
 app.get('/new/:url(*)', function(req, res ,next){
   var url = req.params.url;
-  Links.create({
-    url : url
-  }, function(err, result){
-    if(err){
-      console.log(err);
-    } else {
-      console.log('Successful Add');
-    }
-  });
+  if(validUrl.isHttpUri(url) || validUrl.isHttpsUri(url)){
+    Links.create({
+      url : url
+    }, function(err, result){
+      if(err){
+        console.log(err);
+      } else {
+        console.log('Successful Add');
+        console.log(result);
+      }
+    });
+  } else {
+    res.send('Please Enter A Valid Url');
+  }
   res.send(url);
 });
 
