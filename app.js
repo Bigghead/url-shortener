@@ -9,7 +9,9 @@ var express = require('express'),
 app.use(bodyParser.urlencoded({extended : true}));
 
 //connect to Database
-mongoose.connect('mongodb://localhost/url-shortener');
+var config = require('./ignore');
+
+mongoose.connect('mongodb://' + config.db.host + '/url-shortener');
 
 
 
@@ -62,6 +64,6 @@ app.get('/:short', function(req, res, next){
 })
 
 
-app.listen(3000, function(){
-  console.log('Listening on 3000');
+app.listen(8000, function(){
+  console.log('Listening on 8000');
 });
