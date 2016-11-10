@@ -2,14 +2,16 @@ var express = require('express'),
     shortId = require('shortid'),
     validUrl = require('valid-url'),
     mongoose = require('mongoose'),
+
     bodyParser = require('body-parser'),
-    config = require('../config'),
     app = express();
 
 app.use(bodyParser.urlencoded({extended : true}));
 
 //connect to Database
-mongoose.connect('mongodb://'+ config.db.name + '/url-shortener');
+mongoose.connect('mongodb://localhost/url-shortener');
+
+
 
 var linkSchema = new mongoose.Schema({
   url : String,
