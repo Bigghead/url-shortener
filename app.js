@@ -3,12 +3,13 @@ var express = require('express'),
     validUrl = require('valid-url'),
     mongoose = require('mongoose'),
     bodyParser = require('body-parser'),
+    config = require('../config'),
     app = express();
 
 app.use(bodyParser.urlencoded({extended : true}));
 
 //connect to Database
-mongoose.connect('mongodb://localhost/url-shortener');
+mongoose.connect('mongodb://'+ config.db.name + '/url-shortener');
 
 var linkSchema = new mongoose.Schema({
   url : String,
@@ -50,10 +51,10 @@ app.get('/:short', function(req, res, next){
   Links.findOne({
     'shortCode' : shortLink
   }, function(err, doc){
-    if(err){
-      console.log(err);
-    } else {
+    if(doc !== null){
       res.redirect(doc.url);
+    } else {
+      res.json({Error : 'No Link In Database'});
     }
   });
 })
